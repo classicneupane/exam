@@ -1,0 +1,28 @@
+.list-container {
+  padding: 5px;
+  .list-item {
+    margin-top: 1rem;
+    border: 1px solid rgba(17, 136, 234, 0.365);
+    border-radius: 5px;
+    &:hover {
+      border: 1px solid rgb(17, 136, 234);
+      background-color: rgba(255, 255, 224, 0.384);
+    }
+    padding: 10px;
+
+    .title {
+      font-size: 1.3rem;
+      font-weight: 500;
+    }
+
+    .description {
+      color: rgb(58, 56, 56);
+    }
+
+    .timestamp {
+      font-size: 0.8rem;
+      color: gray;
+      margin-top: 5px;
+    }
+  }
+}
