@@ -55,7 +55,7 @@
           {{ item.data.title || 'Untitled' }}
         </div>
         <div class="description">
-          {{ item.data.description || 'asdlksadaskjld' }}
+          {{ item.data.description || '' }}
         </div>
         <div v-if="item.data.tags" class="my-2">
           <v-btn
