@@ -175,8 +175,8 @@ export default {
           this.examId = eid;
           exam.setId(eid);
 
-          exam.results().then((results) => {
-            this.allSessions = results;
+          exam.sessions().then((results) => {
+            this.allSessions = results.filter((i) => i.data.submittedAt);
           });
 
           exam

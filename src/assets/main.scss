@@ -25,4 +25,12 @@
       margin-top: 5px;
     }
   }
+  .list-item--active{
+      background-color: rgba(255, 255, 224, 0.384) !important;
+  }
+}
+
+
+.tag {
+  text-transform: none;
 }

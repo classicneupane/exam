@@ -1626,6 +1626,11 @@
     pako "^2.0.4"
     resize-observer-polyfill "^1.5.1"
 
+"@mdi/light-js@^0.2.63":
+  version "0.2.63"
+  resolved "https://registry.yarnpkg.com/@mdi/light-js/-/light-js-0.2.63.tgz#96682ef162c79d328652a3b3c6799137289d30ac"
+  integrity sha512-+SUtJIOxvEy6DiVq0wTRPIzVuoPB5fhnubmzaN7e2ew0v3/nvnpC4mqbGCjiTK0diVd3+zvhEQHZzPDErGb1fg==
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"

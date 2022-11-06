@@ -24,7 +24,10 @@ export default class Exam {
     this.user = '';
     this.data = {};
     this.firestore = firestore;
-    this.ref = collection(this.firestore, config.firestore.exam);
+    this.ref = collection(
+      this.firestore,
+      config.firestore.exam,
+    );
     this.refSession = collection(
       this.firestore,
       config.firestore.examSession,
@@ -74,7 +77,10 @@ export default class Exam {
   }
 
   create(data) {
-    const examData = { ...this.defaultData(), ...(data || {}) };
+    const examData = {
+      ...this.defaultData(),
+      ...(data || {}),
+    };
     if (!examData.user) {
       throw new Error('user id is required');
     }
@@ -123,11 +129,16 @@ export default class Exam {
       throw new Error('User id is required');
     }
     return new Promise((resolve, reject) => {
-      getDocs(query(this.ref, where('user', '==', this.user)))
+      getDocs(
+        query(this.ref, where('user', '==', this.user)),
+      )
         .then((res) => {
           const data = [];
           res.forEach((document) => {
-            data.push({ id: document.id, data: document.data() });
+            data.push({
+              id: document.id,
+              data: document.data(),
+            });
           });
           resolve(data);
         })
@@ -144,8 +155,7 @@ export default class Exam {
       skipped: 0,
       correct: 0,
       incorrect: 0,
-      questions: {
-      },
+      questions: {},
     };
     questions.forEach((question) => {
       res.total += 1;
@@ -154,7 +164,8 @@ export default class Exam {
       } else {
         res.skipped += 1;
       }
-      const isCorrect = String(question.data.correct) === String(submitted[question.id]);
+      const isCorrect = String(question.data.correct)
+        === String(submitted[question.id]);
       if (isCorrect) {
         res.correct += 1;
       } else {
@@ -171,24 +182,32 @@ export default class Exam {
 
   submit(sessionId) {
     return new Promise((resolve, reject) => {
-      getDoc(doc(this.refSession, sessionId)).then((session) => {
-        const data = session.data();
+      getDoc(doc(this.refSession, sessionId)).then(
+        (session) => {
+          const data = session.data();
 
-        if (!Exam.validSession(data)) {
-          reject(new Error('Invalid session'));
-        }
+          if (!Exam.validSession(data)) {
+            reject(new Error('Invalid session'));
+          }
 
-        data.submittedAt = new Date();
-        const question = new Question();
-        question.setExamId(data.exam);
+          data.submittedAt = new Date();
+          const question = new Question();
+          question.setExamId(data.exam);
 
-        question.list().then((questionList) => {
-          const result = Exam.checkAnswer(questionList, data.submitData);
-          data.result = result;
-          this.updateSession(sessionId, data);
-          resolve();
-        }).catch((error) => reject(error));
-      });
+          question
+            .list()
+            .then((questionList) => {
+              const result = Exam.checkAnswer(
+                questionList,
+                data.submitData,
+              );
+              data.result = result;
+              this.updateSession(sessionId, data);
+              resolve();
+            })
+            .catch((error) => reject(error));
+        },
+      );
     });
   }
 
@@ -196,11 +215,14 @@ export default class Exam {
     if (data.cancelled || data.submittedAt) {
       return false;
     }
-    const time = moment(new Date()).subtract(1, 'minute').diff(
-      data.startedAt.toDate(),
-    );
+    const time = moment(new Date())
+      .subtract(1, 'minute')
+      .diff(data.startedAt.toDate());
 
-    if (data.duration && time >= (data.duration * 1000 * 60)) {
+    if (
+      data.duration
+      && time >= data.duration * 1000 * 60
+    ) {
       return false;
     }
 
@@ -208,7 +230,9 @@ export default class Exam {
   }
 
   static examAlreadyTaken(sessions) {
-    return sessions.some((session) => session.data.submittedAt);
+    return sessions.some(
+      (session) => session.data.submittedAt,
+    );
   }
 
   checkSession() {
@@ -224,11 +248,16 @@ export default class Exam {
           let docs = [];
           if (res.size) {
             res.forEach((session) => {
-              docs.push({ id: session.id, data: session.data() });
+              docs.push({
+                id: session.id,
+                data: session.data(),
+              });
             });
 
             const alreadyTaken = Exam.examAlreadyTaken(docs);
-            const lastSessionId = docs.filter((i) => i.data.submittedAt)[0]?.id;
+            const lastSessionId = docs.filter(
+              (i) => i.data.submittedAt,
+            )[0]?.id;
             const totalSessions = docs.length;
 
             docs = docs.filter((session) => Exam.validSession(session.data));
@@ -245,12 +274,18 @@ export default class Exam {
             });
 
             resolve({
-              session: docs[0], alreadyTaken, totalSessions, lastSessionId,
+              session: docs[0],
+              alreadyTaken,
+              totalSessions,
+              lastSessionId,
             });
           } else {
             // reject(new Error('No sessions found'));
             resolve({
-              session: null, alreadyTaken: false, totalSessions: 0, lastSessionId: null,
+              session: null,
+              alreadyTaken: false,
+              totalSessions: 0,
+              lastSessionId: null,
             });
           }
         })
@@ -290,14 +325,20 @@ export default class Exam {
         .then((res) => {
           let docs = [];
           res.forEach((session) => {
-            docs.push({ id: session.id, data: session.data() });
+            docs.push({
+              id: session.id,
+              data: session.data(),
+            });
           });
-          docs = docs.filter((session) => session.data.submittedAt);
+          docs = docs.filter(
+            (session) => session.data.submittedAt,
+          );
           if (!docs.length) {
             reject(new Error('Result not found'));
           }
           resolve(docs[0]);
-        }).catch((err) => {
+        })
+        .catch((err) => {
           reject(err);
         });
     });
@@ -305,25 +346,25 @@ export default class Exam {
 
   getSession(id) {
     return new Promise((resolve, reject) => {
-      getDoc(doc(this.refSession, id)).then((res) => {
-        if (!res.exists) {
-          reject(new Error('document does not exists'));
-        }
-        resolve({ id: res.id, data: res.data() });
-      }).catch((err) => {
-        reject(err);
-      });
+      getDoc(doc(this.refSession, id))
+        .then((res) => {
+          if (!res.exists) {
+            reject(new Error('document does not exists'));
+          }
+          resolve({ id: res.id, data: res.data() });
+        })
+        .catch((err) => {
+          reject(err);
+        });
     });
   }
 
-  results() {
+  sessions() {
     // if (!this.id || !this.user) {
     //   throw new Error('user id or exam id missing');
     // }
     return new Promise((resolve, reject) => {
-      let q = query(
-        this.refSession,
-      );
+      let q = query(this.refSession);
 
       if (this.user) {
         q = query(q, where('user', '==', this.user));
@@ -335,18 +376,28 @@ export default class Exam {
 
       getDocs(q)
         .then((res) => {
-          let docs = [];
+          const docs = [];
           res.forEach((session) => {
-            docs.push({ id: session.id, data: session.data() });
+            docs.push({
+              id: session.id,
+              data: session.data(),
+            });
           });
-          docs = docs.filter((session) => session.data.submittedAt);
           if (!docs.length) {
             reject(new Error('Result not found'));
           }
           resolve(docs);
-        }).catch((err) => {
+        })
+        .catch((err) => {
           reject(err);
         });
     });
+  }
+
+  static remainingTime(session) {
+    const time = moment(new Date()).diff(
+      session.data.startedAt.toDate(),
+    );
+    return session.data.duration * 60 * 1000 - time;
   }
 }

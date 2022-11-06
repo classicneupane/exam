@@ -11,23 +11,25 @@
           "
         >
           <div>
-            <h1  style="color: #D87CA5" class="display-2">
+            <h1 style="color: #d87ca5" class="display-2">
               Create exam
             </h1>
-            <div style="max-width: 400px; font-weight: 400;" class="my-2">
+            <div class="my-2 description">
               Create online test and quizzes in minutes, for
               any subject, any language and for all grade
               levels. Engage students on any device.
             </div>
-            <v-btn
-              rounded
-              x-large
-              dark
-              color="indigo"
-              class="mt-4"
-              to="/login?message=Please login to continue"
-              >Get started</v-btn
-            >
+            <div class="cta">
+              <v-btn
+                rounded
+                x-large
+                dark
+                color="indigo"
+                class="mt-4"
+                to="/login?message=Please login to continue"
+                >Get started</v-btn
+              >
+            </div>
           </div>
           <div>
             <lottie-player
@@ -59,11 +61,26 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.section-1 {
+  @media (max-width: 825px) {
+    margin-top: 3rem !important;
+
+    .cta {
+      text-align: center;
+    }
+  }
+}
 .lottie-player {
   min-width: 200px;
   max-width: 600px;
   @media (max-width: 1189px) {
     max-width: 400px;
   }
+}
+.description {
+  max-width: 500px;
+  font-weight: 400;
+  font-size: 1.3rem;
+  color: grey;
 }
 </style>

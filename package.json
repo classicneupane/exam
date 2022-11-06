@@ -12,6 +12,7 @@
   "dependencies": {
     "@chenfengyuan/vue-countdown": "1",
     "@lottiefiles/lottie-player": "^1.6.0",
+    "@mdi/light-js": "^0.2.63",
     "core-js": "^3.6.5",
     "firebase": "^9.13.0",
     "lodash": "^4.17.21",

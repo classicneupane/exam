@@ -3,6 +3,7 @@
     <div v-if="data.length">
       <v-btn
         text
+        x-large
         color="primary"
         class="v-btn--active text-capitalize"
         @click="createExam()"
@@ -11,29 +12,39 @@
     </div>
     <div v-if="loading">
       <div class="mt-10 text-center">
-          <v-progress-circular
-            width="5"
-            size="50"
-            color="primary"
-            indeterminate
-          ></v-progress-circular>
+        <v-progress-circular
+          width="5"
+          size="50"
+          color="primary"
+          indeterminate
+        ></v-progress-circular>
       </div>
     </div>
     <div v-else-if="!loading && !data.length">
       <v-row align="center" justify="center">
         <v-col>
-          <h1 class="display-1">
-            Create, share, analyze
-          </h1>
-          <v-btn class="mt-5 text-capitalize"
-           x-large color="primary" @click="createExam()" >Create exam</v-btn>
+          <h1 class="display-1">Create, share, analyze</h1>
+          <v-btn
+            class="mt-5 text-capitalize"
+            x-large
+            color="primary"
+            @click="createExam()"
+            >Create exam</v-btn
+          >
         </v-col>
         <v-col>
-          <v-img src="@/assets/exam.jpg"  max-width="400"></v-img>
+          <v-img
+            src="@/assets/exam.jpg"
+            max-width="400"
+          ></v-img>
         </v-col>
       </v-row>
     </div>
-    <div class="list-container" v-else-if="data.length && !loading">
+    <div
+      class="list-container mx-auto"
+      style="max-width: 800px"
+      v-else-if="data.length && !loading"
+    >
       <div
         v-for="item in data"
         :key="item.id"
@@ -45,6 +56,18 @@
         </div>
         <div class="description">
           {{ item.data.description || 'asdlksadaskjld' }}
+        </div>
+        <div v-if="item.data.tags" class="my-2">
+          <v-btn
+            v-for="tag in item.data.tags"
+            :key="tag"
+            rounded
+            text
+            class="mx-1 v-btn--active"
+            color="indigo"
+          >
+            {{ tag }}
+          </v-btn>
         </div>
         <div class="timestamp">
           Created {{ fromNow(item.data.createdAt) }}
@@ -83,11 +106,14 @@ export default {
     },
     listExams() {
       exam.setUser(this.$store.state.user.uid);
-      exam.list().then((data) => {
-        this.data = data;
-      }).finally(() => {
-        this.loading = false;
-      });
+      exam
+        .list()
+        .then((data) => {
+          this.data = data;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
   },
 };

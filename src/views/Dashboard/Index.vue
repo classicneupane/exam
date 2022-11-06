@@ -1,7 +1,13 @@
 <template>
   <v-main>
     <v-container>
-      <ExamList />
+      <div>
+        <ActiveSessions />
+      </div>
+      <v-divider class="my-3"></v-divider>
+      <div>
+        <ExamList />
+      </div>
     </v-container>
   </v-main>
 </template>
@@ -12,7 +18,12 @@ export default {
     title: 'Dashboard',
   },
   components: {
-    ExamList: () => import('../../components/Exam/List.vue'),
+    ExamList: () =>
+      // eslint-disable-next-line implicit-arrow-linebreak
+      import('../../components/Exam/List.vue'),
+    ActiveSessions: () =>
+      // eslint-disable-next-line implicit-arrow-linebreak
+      import('../../components/ActiveSessions.vue'),
   },
 };
 </script>

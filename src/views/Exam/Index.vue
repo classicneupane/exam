@@ -49,13 +49,47 @@
           hover
           v-if="!sessionId"
         >
-          <v-card-title>
+          <v-card-title class="mt-3">
             {{ exam.title }}
           </v-card-title>
           <v-card-subtitle>
             {{ exam.description }}
+            <br />
+            <div class="grey--text mt-3">
+              By {{ exam.userFullName }} |
+              {{ fromNow(exam.createdAt.toDate()) }}
+            </div>
           </v-card-subtitle>
           <v-card-text>
+            <div>
+              <v-btn
+                color="error"
+                v-if="exam.duration"
+                rounded
+                class="my-2 mx-1 text-capitalize"
+              >
+                <v-icon>
+                  {{ mdilClock }}
+                </v-icon>
+                <span class="ml-1">
+                  {{ exam.duration }} minutes
+                </span>
+              </v-btn>
+            </div>
+            <div>
+              <div v-if="exam.tags" class="my-2">
+                <v-btn
+                  v-for="tag in exam.tags"
+                  :key="tag"
+                  text
+                  rounded
+                  class="mx-1 v-btn--active tag"
+                  color="indigo"
+                >
+                  {{ tag }}
+                </v-btn>
+              </div>
+            </div>
             <v-alert
               color="purple"
               text
@@ -65,22 +99,18 @@
               You've already taken this test. You can not
               retake this exam.
             </v-alert>
-            <div>
-              <div v-if="exam.duration">
-                Duration: {{ exam.duration }} minutes
-              </div>
-            </div>
-            <div class="my-5">
+            <div class="my-5" v-else>
               <v-btn
-                large
-                color="success"
-                text
-                class="v-btn--active text-capitalize"
+                x-large
+                dark
+                color="purple"
+                class="text-capitalize"
                 @click="start()"
                 block
                 :disabled="isDisabled()"
                 :loading="loadingStart"
-                >Start Exam <v-icon>mdi-play</v-icon></v-btn
+                >Start Exam
+                <v-icon>{{ mdilPlay }}</v-icon></v-btn
               >
               <v-btn
                 grey
@@ -93,13 +123,16 @@
               >
             </div>
             <div>
-            <v-btn color="indigo"
-            large
-            :to="`/results/${lastSessionId}`"
-            dark
-            v-if="lastSessionId" class="text-capitalize">See results
-            <v-icon>mdi-chart-box</v-icon>
-            </v-btn>
+              <v-btn
+                color="indigo"
+                large
+                :to="`/results/${lastSessionId}`"
+                dark
+                v-if="lastSessionId"
+                class="text-capitalize"
+                >See results
+                <v-icon>mdi-chart-box</v-icon>
+              </v-btn>
             </div>
           </v-card-text>
         </v-card>
@@ -199,6 +232,8 @@
 <script>
 import VueCountdown from '@chenfengyuan/vue-countdown';
 import { debounce } from 'throttle-debounce';
+import moment from 'moment';
+import { mdilClock, mdilPlay } from '@mdi/light-js';
 import Question from '../../services/question';
 import Exam from '../../services/exam';
 import '@lottiefiles/lottie-player';
@@ -225,6 +260,8 @@ export default {
   },
   data() {
     return {
+      mdilClock,
+      mdilPlay,
       dialogs: {
         cancel: false,
       },
@@ -250,6 +287,9 @@ export default {
     },
   },
   methods: {
+    fromNow(date) {
+      return moment(date).fromNow();
+    },
     isDisabled() {
       if (this.alreadyTaken) {
         return !this.exam.allowRetake;

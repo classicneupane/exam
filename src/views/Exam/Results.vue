@@ -29,20 +29,45 @@
         <v-container>
           <!-- <div>
         </div> -->
-        <div v-if="!results.length" class="my-3">
-          <div class="d-flex flex-wrap justify-space-around align-center">
-            <div>
-              <v-alert type="info" text border="left"> No results found</v-alert>
-            </div>
-            <div>
-              <v-img src="@/assets/no-data.svg" max-width="300"></v-img>
+          <div v-if="!results.length" class="my-3">
+            <div
+              class="
+                d-flex
+                flex-wrap
+                justify-space-around
+                align-center
+              "
+            >
+              <div>
+                <v-alert type="info" text border="left">
+                  No results found</v-alert
+                >
+              </div>
+              <div>
+                <v-img
+                  src="@/assets/no-data.svg"
+                  max-width="300"
+                ></v-img>
+              </div>
             </div>
           </div>
-        </div>
-          <div class="list-container" v-show="mode==='default'">
+          <div
+            class="list-container"
+            v-show="mode === 'default'"
+          >
             <div v-show="results.length">
               <v-sheet max-width="150">
-            <v-select label="Sort by" v-model="sort" :items="[{text: 'Latest', value: 'latest'}, {text: 'Highest score', value: 'highestScore'}]"></v-select>
+                <v-select
+                  label="Sort by"
+                  v-model="sort"
+                  :items="[
+                    { text: 'Latest', value: 'latest' },
+                    {
+                      text: 'Highest score',
+                      value: 'highestScore',
+                    },
+                  ]"
+                ></v-select>
               </v-sheet>
             </div>
             <div
@@ -96,24 +121,20 @@
                       ml-1
                     "
                   >
-                    {{
-                      result.data.result.submitted
-                    }}
+                    {{ result.data.result.submitted }}
                     Submitted
                   </v-btn>
                   <v-btn
                     text
-                    color="cyan"
+                    color="teal"
                     class="
                       text-capitalize
                       v-btn--active
                       ml-1
                     "
                   >
-                    {{
-                      result.data.result.submitted
-                    }}
-                    Submitted
+                    {{ result.data.result.skipped }}
+                    Skipped
                   </v-btn>
                   <!-- <v-btn  class="text-capitalize mr-1" color="purple" dark v-if="result.otherAttempts.length">{{result.otherAttempts.length}} attempts</v-btn> -->
                 </div>
@@ -129,10 +150,7 @@
               </div>
             </div>
           </div>
-          <div v-show="mode==='chart'"></div>
-          <div class="timestamp text-right mt-5">
-            {{ fromNow(exam.createdAt.toDate()) }}
-          </div>
+          <div v-show="mode === 'chart'"></div>
         </v-container>
       </v-card>
     </v-container>
@@ -208,8 +226,10 @@ export default {
     },
     getData() {
       e.setId(this.$route.params.id);
-      e.results().then((data) => {
-        this.results = data;
+      e.sessions().then((data) => {
+        this.results = data.filter(
+          (i) => i.data.submittedAt,
+        );
       });
       e.get().then((exam) => {
         this.exam = exam;
