@@ -53,8 +53,9 @@
             </div>
             <div class="section-item">
               <v-img
-                src="@/assets/exam.jpg"
-                max-width="500"
+                src="@/assets/review.png"
+                max-width="600"
+                style="border-radius: 10px"
               ></v-img>
             </div>
           </div>
@@ -71,7 +72,7 @@
           >
             <div class="section-item">
               <h2 class="title-feature">
-                For admin
+                For creators
               </h2>
               <div class="feature-description">
                 View the outcomes and efforts of all
