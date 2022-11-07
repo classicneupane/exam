@@ -25,10 +25,24 @@
                 x-large
                 dark
                 color="indigo"
-                class="mt-4"
+                class="mt-4 text-capiatlize"
                 to="/login?message=Please login to continue"
                 >Get started</v-btn
               >
+              <v-hover v-slot="{hover}">
+              <v-btn
+                x-large
+                color="secondary"
+                class="text-capitalize mt-4 ml-2"
+                :outlined="!hover"
+                to="/features"
+                rounded
+              >
+                Learn More
+              </v-btn>
+              </v-hover>
+            </div>
+            <div>
             </div>
           </div>
           <div>

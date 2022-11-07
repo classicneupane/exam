@@ -65,6 +65,13 @@ const routes = [
       default: () => import('../views/Exam/Results.vue'),
     },
   },
+  {
+    path: '/features',
+    components: {
+      header: AppHeader,
+      default: () => import('../views/Features.vue'),
+    },
+  },
 ];
 
 const router = new VueRouter({

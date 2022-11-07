@@ -30,6 +30,7 @@ export default {
     },
     links() {
       const data = [{ text: 'Home', to: '/' }];
+      data.push({ text: 'Features', to: '/features' });
       if (this.$store.state.loggedIn) {
         data.push({ text: 'Dashboard', to: '/dashboard' });
         data.push({ text: '', to: '/logout', icon: 'mdi-logout' });
