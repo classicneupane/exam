@@ -4,7 +4,6 @@
       <div>
         <ActiveSessions />
       </div>
-      <v-divider class="my-3"></v-divider>
       <div>
         <ExamList />
       </div>

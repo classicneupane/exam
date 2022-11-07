@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="sessions" class="mt-2">
+    <div v-if="sessions && sessions.length" class="mt-2">
       <h1 class="text-h4">Ongoing exam</h1>
       <div class="list-container d-flex">
         <div
@@ -16,15 +16,15 @@
             {{ fromNow(session.data.startedAt.toDate()) }}
           </small>
           <div class="grey--text my-1">
-            <v-icon >mdi-clock</v-icon>
-              <vue-countdown
-                v-if="session.data.duration"
-                @end="submit()"
-                :time="session.data.remaining"
-                v-slot="{ hours, minutes, seconds }"
-              >
-                {{ hours }}:{{ minutes }}:{{ seconds }}
-              </vue-countdown>
+            <v-icon>mdi-clock</v-icon>
+            <vue-countdown
+              v-if="session.data.duration"
+              @end="submit()"
+              :time="session.data.remaining"
+              v-slot="{ hours, minutes, seconds }"
+            >
+              {{ hours }}:{{ minutes }}:{{ seconds }}
+            </vue-countdown>
           </div>
           <div class="text-center my-2">
             <v-btn
@@ -38,6 +38,7 @@
           </div>
         </div>
       </div>
+      <v-divider class="my-3"></v-divider>
     </div>
   </div>
 </template>
