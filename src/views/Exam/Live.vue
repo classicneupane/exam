@@ -5,19 +5,6 @@
       <v-card class="mx-auto" max-width="700" flat>
         <v-card-title>
           <v-btn
-            text
-            class="mr-1"
-            :class="{ 'v-btn--active': mode === 'chart' }"
-            color="indigo"
-            @click="
-              mode === 'chart'
-                ? (mode = 'default')
-                : (mode = 'chart')
-            "
-          >
-            <v-icon>mdi-chart-bar</v-icon>
-          </v-btn>
-          <v-btn
             color="secondary"
             class="text-capitalize my-5"
             :to="`/exam/${this.$route.params.id}/edit`"
@@ -25,13 +12,13 @@
           >
           <v-spacer></v-spacer>
           <v-btn
-            color="error"
-            :to="`/exam/${$route.params.id}/live`"
+            color="primary"
+            :to="`/exam/${$route.params.id}/results`"
             dark
             text
-            class="text-capitalize my-1 ml-1 v-btn--active"
-            >Live
-            <v-icon>mdi-broadcast</v-icon>
+            class="text-capitalize v-btn--active"
+            >Results
+            <v-icon>mdi-chart-bar</v-icon>
           </v-btn>
         </v-card-title>
         <!-- <v-card-subtitle>
@@ -42,6 +29,7 @@
           <div v-if="!results.length" class="my-3">
             <div
               class="
+              flex-wrap
                 d-flex
                 flex-wrap
                 justify-space-around
@@ -50,13 +38,17 @@
             >
               <div>
                 <v-alert type="info" text border="left">
-                  No results found</v-alert
+                  No active sessions found
+                  <br>
+                  When user starts examination it'll appear here
+                  </v-alert
                 >
               </div>
               <div>
                 <v-img
-                  src="@/assets/no-data.svg"
-                  max-width="300"
+                class="mt-5"
+                  src="@/assets/active-session.svg"
+                  max-width="200"
                 ></v-img>
               </div>
             </div>
@@ -65,21 +57,9 @@
             class="list-container"
             v-show="mode === 'default'"
           >
-            <div v-show="results.length">
-              <v-sheet max-width="150">
-                <v-select
-                  label="Sort by"
-                  v-model="sort"
-                  :items="[
-                    { text: 'Latest', value: 'latest' },
-                    {
-                      text: 'Highest score',
-                      value: 'highestScore',
-                    },
-                  ]"
-                ></v-select>
-              </v-sheet>
-            </div>
+          <v-btn text v-if="resultsComputed.length" color="success" class="v-btn--active text-none" small>
+            {{resultsComputed.length}} user{{resultsComputed.length > 1 ? 's' : ''}} taking exam
+          </v-btn>
             <div
               v-for="result in resultsComputed"
               :key="result.id"
@@ -91,25 +71,19 @@
                 <div>
                   {{ result.data.userFullName }}
                 </div>
-                <div class="timestamp mr-3">
-                  {{
-                    fromNow(
-                      result.data.submittedAt.toDate(),
-                    )
-                  }}
-                </div>
               </div>
               <small class="grey--text">
                 {{ result.data.userEmail }}
               </small>
               <div class="my-4">
-                <div class="d-flex justify-space-around">
+                <div class="d-flex justify-space-around flex-wrap"
+                >
                   <v-btn
                     text
                     color="primary"
-                    class="text-capitalize v-btn--active"
+                    class="text-capitalize v-btn--active my-1"
                   >
-                    {{ result.data.result.total }} Questions
+                    {{question.length}} Questions
                   </v-btn>
                   <v-btn
                     color="success"
@@ -118,9 +92,10 @@
                       text-capitalize
                       v-btn--active
                       ml-1
+                      my-1
                     "
                   >
-                    {{ result.data.result.correct }} Correct
+                    {{resultData( result, 'correct' )}} Correct
                   </v-btn>
                   <v-btn
                     text
@@ -129,9 +104,10 @@
                       text-capitalize
                       v-btn--active
                       ml-1
+                      my-1
                     "
                   >
-                    {{ result.data.result.submitted }}
+                    {{resultData(result,  'submitted' )}}
                     Submitted
                   </v-btn>
                   <v-btn
@@ -141,26 +117,16 @@
                       text-capitalize
                       v-btn--active
                       ml-1
+                      my-1
                     "
                   >
-                    {{ result.data.result.skipped }}
+                    {{ resultData(result, 'skipped') }}
                     Skipped
                   </v-btn>
-                  <!-- <v-btn  class="text-capitalize mr-1" color="purple" dark v-if="result.otherAttempts.length">{{result.otherAttempts.length}} attempts</v-btn> -->
                 </div>
-              </div>
-              <div>
-                <v-btn
-                  :to="`/results/${result.id}`"
-                  text
-                  color="secondary"
-                  class="text-capitalize"
-                  >More details</v-btn
-                >
               </div>
             </div>
           </div>
-          <div v-show="mode === 'chart'"></div>
         </v-container>
       </v-card>
     </v-container>
@@ -170,7 +136,7 @@
 <script>
 import moment from 'moment';
 import Exam from '../../services/exam';
-import { sort } from '../../util';
+import Question from '../../services/question';
 
 const e = new Exam();
 
@@ -184,65 +150,68 @@ export default {
       results: [],
       mode: 'default',
       sort: 'latest',
+      unsubscribe: null,
+      question: [],
     };
   },
   computed: {
     resultsComputed() {
-      const res = {};
-      this.results.forEach((result) => {
-        if (result.data.submittedAt) {
-          if (res[result.data.user]) {
-            res[result.data.user].otherAttempts.push(
-              result,
-            );
-          } else {
-            res[result.data.user] = {
-              ...result,
-              otherAttempts: [],
-            };
-          }
-        }
-      });
-      let results = [];
-
-      Object.values(res).forEach((result) => {
-        results.push(result);
-      });
-
-      const sortBy = this.sort;
-      results = sort({
-        items: results,
-        desc: true,
-        // eslint-disable-next-line consistent-return
-        generator: (item) => {
-          if (sortBy === 'latest') {
-            return item.data.submittedAt.toDate().getTime();
-          }
-          if (sortBy === 'highestScore') {
-            return item.data.result.correct;
-          }
-        },
-      });
-
+      let results = [...this.results];
+      if (this.question && this.question.length) {
+        results = results.map(
+          (session) => {
+            const result = Exam.checkAnswer(this.question, session.data.submitData);
+            return { ...session, result };
+          },
+        );
+      }
       return results;
     },
   },
   mounted() {
     this.getData();
   },
+  beforeDestroy() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+  },
   methods: {
+    resultData(session, key, defaultValue = 0) {
+      if (!session.data.result) {
+        return defaultValue;
+      }
+      return session.data.result[key];
+    },
     fromNow(date) {
       return moment(date).fromNow();
     },
     getData() {
       e.setId(this.$route.params.id);
-      e.sessions().then((data) => {
-        this.results = data.filter(
-          (i) => i.data.submittedAt,
-        );
+      e.sessions((data) => {
+        this.results = data.filter((session) => {
+          if (session.data.submittedAt || session.data.cancelled) return false;
+          const time = moment(new Date())
+            .subtract(1, 'minute')
+            .diff(session.data.startedAt.toDate());
+          if (
+            session.data.duration
+            && time >= session.data.duration * 1000 * 60
+          ) {
+            return false;
+          }
+          return true;
+        });
+      }).then((unsub) => {
+        this.unsubscribe = unsub;
       });
       e.get().then((exam) => {
         this.exam = exam;
+      });
+      const q = new Question();
+      q.setExamId(this.$route.params.id);
+      q.list().then((question) => {
+        this.question = question;
       });
     },
   },

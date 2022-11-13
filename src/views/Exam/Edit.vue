@@ -70,9 +70,7 @@
           </v-card>
         </v-col>
         <v-col cols="12" sm="6">
-          <div
-            class="d-flex justify-space-around flex-wrap"
-          >
+          <div class="d-flex justify-center flex-wrap">
             <!-- Setting -->
             <v-dialog
               v-model="dialogs.setting"
@@ -173,7 +171,12 @@
               x-large
               text
               color="primary"
-              class="text-capitalize my-1 v-btn--active"
+              class="
+                text-capitalize
+                my-1
+                v-btn--active
+                ml-1
+              "
               :to="`/exam/${this.$route.params.id}/results`"
               >Results <v-icon>mdi-chart-bar</v-icon></v-btn
             >

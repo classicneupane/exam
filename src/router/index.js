@@ -66,6 +66,13 @@ const routes = [
     },
   },
   {
+    path: '/exam/:id/live',
+    components: {
+      header: AppHeader,
+      default: () => import('../views/Exam/Live.vue'),
+    },
+  },
+  {
     path: '/features',
     components: {
       header: AppHeader,

@@ -11,6 +11,7 @@ import {
   deleteDoc,
   updateDoc,
   orderBy,
+  onSnapshot,
 } from 'firebase/firestore';
 import moment from 'moment';
 import Question from './question';
@@ -60,7 +61,7 @@ export default class Exam {
   }
 
   updateSession(id, data) {
-    return updateDoc(doc(this.refSession, id), data);
+    return updateDoc(doc(this.refSession, id), { ...data, updatedAt: new Date() });
   }
 
   defaultData() {
@@ -359,7 +360,7 @@ export default class Exam {
     });
   }
 
-  sessions() {
+  sessions(cb) {
     // if (!this.id || !this.user) {
     //   throw new Error('user id or exam id missing');
     // }
@@ -374,23 +375,33 @@ export default class Exam {
       }
       q = query(q, orderBy('startedAt', 'desc'));
 
-      getDocs(q)
-        .then((res) => {
-          const docs = [];
-          res.forEach((session) => {
-            docs.push({
-              id: session.id,
-              data: session.data(),
-            });
+      const formatter = (res) => {
+        const docs = [];
+        res.forEach((session) => {
+          docs.push({
+            id: session.id,
+            data: session.data(),
           });
-          if (!docs.length) {
-            reject(new Error('Result not found'));
-          }
-          resolve(docs);
-        })
-        .catch((err) => {
-          reject(err);
         });
+        if (!docs.length) {
+          reject(new Error('Result not found'));
+        }
+        return docs;
+      };
+
+      if (cb) {
+        resolve(onSnapshot(q, (snap) => {
+          cb(formatter(snap));
+        }));
+      } else {
+        getDocs(q)
+          .then((res) => {
+            resolve(formatter(res));
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      }
     });
   }
 
