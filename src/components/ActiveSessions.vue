@@ -20,7 +20,7 @@
             <vue-countdown
               v-if="session.data.duration"
               @end="submit()"
-              :time="session.data.remaining"
+              :time="remainingTime(session)"
               v-slot="{ hours, minutes, seconds }"
             >
               {{ hours }}:{{ minutes }}:{{ seconds }}
@@ -64,6 +64,9 @@ export default {
     this.fetchSessions();
   },
   methods: {
+    remainingTime(s) {
+      return Exam.remainingTime(s);
+    },
     fromNow(date) {
       return moment(date).fromNow();
     },
@@ -77,11 +80,7 @@ export default {
     fetchSessions() {
       exam.setUser(this.$store.state.user.uid);
       exam.sessions().then((data) => {
-        let sessions = data.filter((i) => Exam.validSession(i.data));
-        sessions = sessions.map((s) => ({
-          ...s,
-          remaining: Exam.remainingTime(s),
-        }));
+        const sessions = data.filter((i) => Exam.validSession(i.data));
         this.sessions = sessions;
       });
     },
