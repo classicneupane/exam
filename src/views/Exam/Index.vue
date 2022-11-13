@@ -153,6 +153,7 @@
 
             <div>
               <v-btn
+              :loading="submitLoading"
                 color="success"
                 @click="submit()"
                 class="text-capitalize mr-1"
@@ -274,6 +275,7 @@ export default {
       session: null,
       alreadyTaken: false,
       lastSessionId: '',
+      submitLoading: false,
     };
   },
   watch: {
@@ -302,12 +304,15 @@ export default {
       });
     },
     submit() {
+      this.submitLoading = true;
       exam
         .updateSession(this.sessionId, this.session)
         .then(() => {
           exam.submit(this.sessionId).then(() => {
             this.$router.push(`/results/${this.sessionId}`);
           });
+        }).finally(() => {
+          this.submitLoading = false;
         });
     },
     fetchSession() {

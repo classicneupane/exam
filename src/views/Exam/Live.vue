@@ -110,19 +110,6 @@
                     {{resultData(result,  'submitted' )}}
                     Submitted
                   </v-btn>
-                  <v-btn
-                    text
-                    color="teal"
-                    class="
-                      text-capitalize
-                      v-btn--active
-                      ml-1
-                      my-1
-                    "
-                  >
-                    {{ resultData(result, 'skipped') }}
-                    Skipped
-                  </v-btn>
                 </div>
               </div>
             </div>
@@ -160,8 +147,10 @@ export default {
       if (this.question && this.question.length) {
         results = results.map(
           (session) => {
+            const res = session;
             const result = Exam.checkAnswer(this.question, session.data.submitData);
-            return { ...session, result };
+            res.data.result = result;
+            return res;
           },
         );
       }

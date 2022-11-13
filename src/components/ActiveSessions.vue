@@ -19,7 +19,6 @@
             <v-icon>mdi-clock</v-icon>
             <vue-countdown
               v-if="session.data.duration"
-              @end="submit()"
               :time="remainingTime(session)"
               v-slot="{ hours, minutes, seconds }"
             >
