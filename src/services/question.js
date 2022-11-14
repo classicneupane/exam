@@ -62,6 +62,10 @@ export default class Question {
           text: '',
           id: randomNumber(),
         },
+        {
+          text: '',
+          id: randomNumber(),
+        },
       ],
       correct: '',
       exam: this.exam || '',
