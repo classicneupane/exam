@@ -9,6 +9,15 @@ import './assets/main.scss';
 
 Vue.config.productionTip = false;
 Vue.use(VueMeta);
+Vue.mixin({
+  methods: {
+    reloadMath() {
+      setTimeout(() => {
+        window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub]);
+      }, 200);
+    },
+  },
+});
 
 new Vue({
   router,
