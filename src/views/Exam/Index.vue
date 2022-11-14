@@ -370,6 +370,7 @@ export default {
         this.loadingStart = false;
         this.session = session;
       });
+      this.reloadMath();
     },
     fetch() {
       if (!this.$store.state.loggedIn) {

@@ -71,6 +71,7 @@
         :items="formData.options"
         v-model="formData.correct"
         editable
+        select-on-click-icon
       >
         <template #footer="{ item, index, hover }">
           <div>
@@ -82,8 +83,7 @@
               @remove="removeOptionImage(index, $event)"
             />
           </div>
-          <v-expand-transition>
-            <div v-show="hover">
+            <div :style="{'visibility': hover ? '' : 'hidden'}">
               <v-btn
                 color="error"
                 text
@@ -105,7 +105,6 @@
                 ></v-btn
               >
             </div>
-          </v-expand-transition>
         </template>
       </BaseSelect>
       <div class="my-3">

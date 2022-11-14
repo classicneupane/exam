@@ -23,13 +23,14 @@
                 rows="1"
                 auto-grow
                 v-if="editable"
+                @click:prepend="select(item, 'icon')"
                 v-model="item.text"
               ></v-textarea>
             </div>
             <div v-else>
             <div  class="d-flex flex-wrap">
               <v-icon
-                :color="isSelected(item) ? 'success' : ''"
+                :color="isSelected(item) ? 'primary' : ''"
               >
                 {{ getIcon(item) }}
               </v-icon>
@@ -88,6 +89,9 @@ export default {
       type: [String, Number],
       default: null,
     },
+    selectOnClickIcon: {
+      type: Boolean, default: false,
+    },
   },
   methods: {
     isSelected(item) {
@@ -99,7 +103,10 @@ export default {
       }
       return 'mdi-checkbox-blank-circle-outline';
     },
-    select(item) {
+    select(item, selected) {
+      if (this.selectOnClickIcon && selected !== 'icon') {
+        return;
+      }
       this.$emit('input', value(item, this.itemValue));
     },
     getObjValue(obj, key) {
