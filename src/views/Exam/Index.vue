@@ -147,9 +147,21 @@
                 :time="this.session.remaining"
                 v-slot="{ hours, minutes, seconds }"
               >
-                {{ hours }}:{{ minutes }}:{{ seconds }}
-              </vue-countdown>
-            </div>
+                  <span
+                    :class="{
+                      'error--text':
+                        hours < 1 && minutes < 10,
+                      blink: hours < 1 && minutes < 10,
+                    }"
+                  >
+                    <strong>
+                      {{ hours }}:{{ minutes }}:{{
+                        seconds
+                      }}
+                    </strong>
+                  </span>
+                </vue-countdown>
+              </div>
 
             <div>
               <v-btn
