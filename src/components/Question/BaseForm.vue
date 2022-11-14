@@ -28,10 +28,12 @@
         {{ error }}
       </v-alert>
 
-      <v-text-field
+      <v-textarea
         v-model="formData.question"
+        auto-grow
+        rows="2"
         label="Question"
-      ></v-text-field>
+      ></v-textarea>
 
       <div>
         <ImageViewer
