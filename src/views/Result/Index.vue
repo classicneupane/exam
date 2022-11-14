@@ -61,14 +61,16 @@
               :key="question.id"
               class="list-item"
             >
-              <div>
+              <div class="d-flex justify-left">
                 <strong> {{ index + 1 }}. </strong>
-                {{ question.data.question }}
+                <div v-html=" question.data.question ">
+                </div>
               </div>
               <div>
                 <div
                   v-for="option in question.data.options"
                   :key="option.id"
+                  class="d-flex"
                 >
                   <v-icon
                     v-if="
@@ -103,7 +105,8 @@
                   <v-icon v-else>
                     mdi-circle-outline
                   </v-icon>
-                  {{ option.text }}
+                  <div v-html=" option.text ">
+                  </div>
                   <v-chip color="success" v-if="!selected(question.id) && correctAnswer(question.id)==option.id" x-small>Correct</v-chip>
                 </div>
               </div>
@@ -134,6 +137,9 @@ export default {
   },
   mounted() {
     this.fetch();
+    setTimeout(() => {
+      this.reloadMath();
+    }, 1000);
   },
   methods: {
     fromNow(date) {
