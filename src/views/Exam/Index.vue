@@ -53,6 +53,8 @@
             </div>
             <div>
               <v-btn
+              @click="submit()"
+              :loading="submitLoading"
                 x-large
                 color="primary"
                 class="text-none"
@@ -231,7 +233,6 @@
                   <v-icon>mdi-view-dashboard</v-icon>
                 </v-btn>
                 <v-btn
-                  :loading="submitLoading"
                   color="indigo"
                   dark
                   @click="bottomSheet = true"
