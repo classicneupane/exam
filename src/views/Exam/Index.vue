@@ -1,5 +1,68 @@
 <template>
   <v-main>
+    <v-bottom-sheet v-model="bottomSheet">
+      <v-card class="mx-auto">
+        <v-container>
+          <div class="d-flex justify-space-between">
+            <div style="font-size: 1.2rem">
+              You've attempted {{ results().submitted }} out
+              of {{ results().total }} questions
+            </div>
+            <v-btn @click="bottomSheet = false" icon
+              ><v-icon>mdi-close</v-icon></v-btn
+            >
+          </div>
+          <div>
+            <div class="my-3">
+              <v-chip color="primary" small
+                >Attempted</v-chip
+              >
+              <v-chip color="warning" class="mx-1" small
+                >Skipped</v-chip
+              >
+            </div>
+            <div
+              class="
+                question-state-container
+                d-flex
+                justify-center
+                align-center
+              "
+            >
+              <div
+                @click="showQuestion(question.id)"
+                v-for="(question, index) in questions"
+                :key="question.id"
+                class="
+                  question-state
+                  d-flex
+                  justify-center
+                  align-center
+                  mx-1
+                  my-1
+                  white--text
+                "
+                :class="
+                  attempted(question)
+                    ? 'primary'
+                    : 'warning'
+                "
+              >
+                {{ (index += 1) }}
+              </div>
+            </div>
+            <div>
+              <v-btn
+                x-large
+                color="primary"
+                class="text-none"
+                >Submit answers
+              </v-btn>
+            </div>
+          </div>
+        </v-container>
+      </v-card>
+    </v-bottom-sheet>
     <v-container>
       <div v-if="loading">
         <div
@@ -138,15 +201,15 @@
         </v-card>
         <div v-else-if="session">
           <!-- EXAM -->
-          <div></div>
-          <div class="d-flex justify-space-between">
-            <div>
-              <vue-countdown
-                v-if="this.session.duration"
-                @end="submit()"
-                :time="this.session.remaining"
-                v-slot="{ hours, minutes, seconds }"
-              >
+          <div class="top-bar">
+            <div class="d-flex justify-space-between">
+              <div>
+                <vue-countdown
+                  v-if="this.session.duration"
+                  @end="submit()"
+                  :time="this.session.remaining"
+                  v-slot="{ hours, minutes, seconds }"
+                >
                   <span
                     :class="{
                       'error--text':
@@ -163,43 +226,50 @@
                 </vue-countdown>
               </div>
 
-            <div>
-              <v-btn
-                :loading="submitLoading"
-                color="indigo"
-                dark
-                @click="submit()"
-                class="text-capitalize mr-1"
-                >Submit</v-btn
-              >
-              <v-menu v-model="dialogs.cancel">
-                <template #activator="{ on }">
-                  <v-btn
-                    v-on="on"
-                    color="error"
-                    class="text-capitalize"
-                    >Cancel</v-btn
-                  >
-                </template>
-                <v-card class="mx-auto">
-                  <v-card-title>
-                    Cancel exam?
-                  </v-card-title>
-                  <v-card-text>
+              <div>
+                <v-btn text class="v-btn--active mr-2" color="cyan" @click="bottomSheet=true">
+                  <v-icon>mdi-view-dashboard</v-icon>
+                </v-btn>
+                <v-btn
+                  :loading="submitLoading"
+                  color="indigo"
+                  dark
+                  @click="bottomSheet = true"
+                  class="text-capitalize mr-1"
+                  >Submit</v-btn
+                >
+                <v-dialog
+                  v-model="dialogs.cancel"
+                  max-width="300"
+                >
+                  <template #activator="{ on }">
                     <v-btn
-                      @click="cancelExam()"
+                      v-on="on"
                       color="error"
-                      class="mr-3"
-                      >Yes</v-btn
+                      class="text-capitalize"
+                      >Cancel</v-btn
                     >
-                    <v-btn
-                      @click="dialogs.cancel = false"
-                      color="secondary"
-                      >No</v-btn
-                    >
-                  </v-card-text>
-                </v-card>
-              </v-menu>
+                  </template>
+                  <v-card class="mx-auto">
+                    <v-card-title>
+                      Cancel exam?
+                    </v-card-title>
+                    <v-card-text>
+                      <v-btn
+                        @click="cancelExam()"
+                        color="error"
+                        class="mr-3"
+                        >Yes</v-btn
+                      >
+                      <v-btn
+                        @click="dialogs.cancel = false"
+                        color="secondary"
+                        >No</v-btn
+                      >
+                    </v-card-text>
+                  </v-card>
+                </v-dialog>
+              </div>
             </div>
           </div>
           <v-divider class="my-2"></v-divider>
@@ -208,13 +278,16 @@
               v-for="(question, index) in questions"
               :key="question.id"
               class="my-5"
+              :class="{
+                highlight: question.id === highlight,
+              }"
             >
               <div
                 v-if="
                   question.data.type === 'MULTIPLE_CHOICE'
                 "
               >
-                <div>
+                <div :id="`question-${question.id}`">
                   <strong>{{ index + 1 }}. </strong>
                   {{ question.data.question }}
                 </div>
@@ -290,6 +363,8 @@ export default {
       alreadyTaken: false,
       lastSessionId: '',
       submitLoading: false,
+      bottomSheet: false,
+      highlight: '',
     };
   },
   watch: {
@@ -303,6 +378,26 @@ export default {
     },
   },
   methods: {
+    showQuestion(id) {
+      this.bottomSheet = false;
+      setTimeout(() => {
+        document.getElementById(`question-${id}`).scrollIntoView({ behavior: 'smooth' });
+        this.highlight = id;
+        setTimeout(() => {
+          this.highlight = '';
+        }, 2000);
+      }, 500);
+    },
+    attempted({ id }) {
+      const res = !!this.session.submitData[id];
+      return res;
+    },
+    results() {
+      return Exam.checkAnswer(
+        this.questions,
+        this.session.submitData,
+      );
+    },
     fromNow(date) {
       return moment(date).fromNow();
     },
@@ -421,4 +516,11 @@ export default {
 </script>
 
 <style>
+.top-bar {
+  padding: 10px 5px 5px 5px;
+  position: sticky;
+  background-color: white;
+  top: 0;
+  z-index: 3;
+}
 </style>

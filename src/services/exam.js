@@ -150,6 +150,9 @@ export default class Exam {
   }
 
   static checkAnswer(questions, submitted) {
+    if (!questions) {
+      throw new Error('questions required');
+    }
     const res = {
       total: 0,
       submitted: 0,
