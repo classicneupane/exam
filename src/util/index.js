@@ -81,4 +81,6 @@ const sort = ({
   return res;
 };
 
-export { randomNumber, sort, randomString };
+export {
+  randomNumber, sort, randomString, value,
+};

@@ -1,6 +1,9 @@
 <template>
-  <div class="mx-auto" style="max-width: 700px;">
-    <div class="d-flex flex-wrap justify-space-between" v-if="data.length">
+  <div class="mx-auto" style="max-width: 700px">
+    <div
+      class="d-flex flex-wrap justify-space-between"
+      v-if="data.length"
+    >
       <h1 class="text-h5">Questions</h1>
       <v-btn
         @click="$refs.question.dialog = true"
@@ -20,7 +23,11 @@
         <v-card-title>
           Edit question
           <v-spacer></v-spacer>
-          <v-btn icon color="error" @click="deleteQuestion()">
+          <v-btn
+            icon
+            color="error"
+            @click="deleteQuestion()"
+          >
             <v-icon>mdi-trash-can</v-icon>
           </v-btn>
         </v-card-title>
@@ -63,12 +70,16 @@
         v-for="(item, index) in data"
         @click="edit(item)"
         :key="item.id"
-        class="list-item"
+        class="list-item list-item-question"
       >
         <div class="d-flex justify-space-between">
-          <div>{{ index + 1 }}. {{ item.data.question }}</div>
-          <div v-if="item.data.images">
-            <ImageViewer :images="item.data.images"/>
+          <div>
+            <div>
+              {{ index + 1 }}. {{ item.data.question }}
+            </div>
+            <div v-if="item.data.images">
+              <ImageViewer :images="item.data.images" readonly/>
+            </div>
           </div>
           <div>
             <v-btn @click="edit(item)" icon color="primary">
@@ -77,14 +88,24 @@
           </div>
         </div>
         <div class="ml-2">
-          <v-radio-group v-model="item.data.correct" readonly>
+          <!-- <v-radio-group
+            v-model="item.data.correct"
+            readonly
+          >
             <v-radio
               v-for="option in item.data.options"
               :key="option.id"
               :label="option.text"
               :value="option.id"
-            ></v-radio>
-          </v-radio-group>
+            >
+            <template #label="{item}">
+              {{item}}
+            </template>
+            </v-radio>
+          </v-radio-group> -->
+          <div>
+            <BaseSelect :items="item.data.options" :value="item.data.correct" readonly/>
+          </div>
         </div>
       </div>
     </div>
@@ -107,6 +128,7 @@ export default {
     EditForm: () => import('./EditForm.vue'),
     QuestionAdd: () => import('./Add.vue'),
     ImageViewer: () => import('../ImageViewer.vue'),
+    BaseSelect: () => import('../BaseSelect.vue'),
   },
   data() {
     return {
@@ -152,4 +174,7 @@ export default {
 </script>
 
 <style>
+.list-item-question{
+  border: 0px !important
+}
 </style>

@@ -36,6 +36,10 @@ import Vue from 'vue';
 Vue.use(VueViewer);
 export default {
   props: {
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
     images: {
       type: Array,
       default: null,
@@ -61,7 +65,7 @@ export default {
   },
   methods: {
     show() {
-      if (this.showRemove) {
+      if (this.readonly) {
         return;
       }
       this.$viewerApi({

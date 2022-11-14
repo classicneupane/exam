@@ -153,7 +153,7 @@
 
             <div>
               <v-btn
-              :loading="submitLoading"
+                :loading="submitLoading"
                 color="success"
                 @click="submit()"
                 class="text-capitalize mr-1"
@@ -194,6 +194,7 @@
             <div
               v-for="(question, index) in questions"
               :key="question.id"
+              class="my-5"
             >
               <div
                 v-if="
@@ -205,23 +206,18 @@
                   {{ question.data.question }}
                 </div>
                 <div>
-                  <ImageViewer :images="question.data.images" v-if="question.data.images"/>
+                  <ImageViewer
+                    :images="question.data.images"
+                    v-if="question.data.images"
+                  />
                 </div>
                 <div class="ml-3">
-                  <v-radio-group
+                  <BaseSelect
                     v-model="
                       session.submitData[question.id]
                     "
-                  >
-                    <v-radio
-                      v-for="option in question.data
-                        .options"
-                      :key="option.id"
-                      :value="option.id"
-                      :label="option.text"
-                    >
-                    </v-radio>
-                  </v-radio-group>
+                    :items="question.data.options"
+                  />
                 </div>
               </div>
             </div>
@@ -253,6 +249,7 @@ export default {
   components: {
     VueCountdown,
     ImageViewer: () => import('../../components/ImageViewer.vue'),
+    BaseSelect: () => import('../../components/BaseSelect.vue'),
   },
   created() {
     const eid = this.$route.params.id;
@@ -315,7 +312,8 @@ export default {
           exam.submit(this.sessionId).then(() => {
             this.$router.push(`/results/${this.sessionId}`);
           });
-        }).finally(() => {
+        })
+        .finally(() => {
           this.submitLoading = false;
         });
     },

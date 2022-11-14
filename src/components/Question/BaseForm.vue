@@ -10,25 +10,12 @@
           >
         </v-card-title>
         <v-card-text>
-          <ImageUpload v-model="formData.images">
-            <template #footer="{ uploading }">
-              <div
-                class="text-center"
-                v-if="
-                  formData.images &&
-                  formData.images.length &&
-                  !uploading
-                "
-              >
-                <v-btn
-                  large
-                  color="success"
-                  @click="dialogs.addImage = false"
-                  class="text-capitalize"
-                  >Done</v-btn
-                >
-              </div>
-            </template>
+          <ImageUpload
+            :key="upload"
+            @input="onUploadImages"
+            :value="prevImages"
+            @close="dialogs.addImage = false"
+          >
           </ImageUpload>
         </v-card-text>
       </v-card>
@@ -52,6 +39,7 @@
           v-if="formData.images"
           @remove="removeImage"
           :show-remove="editImage"
+          :readonly="editImage"
         />
       </div>
 
@@ -60,38 +48,58 @@
         text
         color="primary"
         class="v-btn--active"
-        @click="dialogs.addImage = true"
+        @click="
+          dialogs.addImage = true;
+          optionIndex = -1;
+          prevImages = formData.images || [];
+        "
         >Add images
         <v-icon>mdi-image-plus-outline</v-icon></v-btn
       >
-        <v-btn
+      <v-btn
         v-show="formData.images && formData.images.length"
-          :text="!editImage"
-          small
-          color="error"
-          class="text-capitalize ml-1"
-          @click="editImage = !editImage"
-          >Edit</v-btn
-        >
-
-      <div
-        class="d-flex"
-        v-for="(option, index) in formData.options"
-        :key="index"
+        :text="!editImage"
+        small
+        color="error"
+        class="text-capitalize ml-1"
+        @click="editImage = !editImage"
+        >Edit</v-btn
       >
-        <v-radio-group v-model="formData.correct">
-          <v-radio :value="option.id"></v-radio>
-        </v-radio-group>
-        <v-textarea
-          rows="1"
-          auto-grow
-          v-model="option.text"
-          :placeholder="'Option ' + (index + 1)"
-          append-icon="mdi-delete"
-          @click:append="removeOption(option.id)"
-        ></v-textarea>
-      </div>
-
+      <BaseSelect
+        :items="formData.options"
+        v-model="formData.correct"
+        editable
+      >
+        <template #footer="{ item, index }">
+          <div>
+            <ImageViewer
+              :images="item.images"
+              v-if="item.images"
+              show-remove
+              readonly
+              @remove="removeOptionImage(index, $event)"
+            />
+          </div>
+          <v-btn
+            color="error"
+            text
+            class="text-none"
+            @click="removeOption(item.id)"
+            small
+          >
+            <v-icon>mdi-trash-can</v-icon>
+          </v-btn>
+          <v-btn
+            small
+            color="info"
+            text
+            class="text-none"
+            @click="addOptionImage(item, index)"
+          >
+            <v-icon>mdi-image-plus-outline</v-icon></v-btn
+          >
+        </template>
+      </BaseSelect>
       <div class="my-3">
         <v-btn
           @click="addOption()"
@@ -134,6 +142,7 @@ export default {
   components: {
     ImageUpload,
     ImageViewer: () => import('../ImageViewer.vue'),
+    BaseSelect: () => import('../BaseSelect.vue'),
   },
   props: {
     id: {
@@ -169,6 +178,9 @@ export default {
       question: null,
       loading: false,
       questionId: '',
+      optionIndex: -1,
+      prevImages: [],
+      upload: 0,
     };
   },
   watch: {
@@ -182,9 +194,36 @@ export default {
     },
   },
   methods: {
+    addOptionImage(item, index) {
+      this.upload += 1;
+      this.prevImages = item.images || [];
+      this.optionIndex = index;
+      this.dialogs.addImage = true;
+    },
+    onUploadImages(images) {
+      if (this.optionIndex !== -1) {
+        this.formData.options[this.optionIndex].images = images;
+      } else {
+        this.formData.images = images;
+      }
+      this.optionIndex = -1;
+    },
+    removeOptionImage(optionIndex, image) {
+      const { images } = this.formData.options[optionIndex];
+      if (!images) {
+        return;
+      }
+      const imageIndex = images.findIndex(
+        (i) => i.id === image.id,
+      );
+      this.formData.options[optionIndex].images.splice(imageIndex, 1);
+      this.optionIndex = -1;
+    },
     removeImage(image) {
       if (!this.formData.images) return;
-      const index = this.formData.images.findIndex((i) => i.id === image.id);
+      const index = this.formData.images.findIndex(
+        (i) => i.id === image.id,
+      );
       if (index !== -1) {
         this.formData.images.splice(index, 1);
       }

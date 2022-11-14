@@ -11,9 +11,22 @@
       </v-alert>
       <input id="file" type="file" multiple />
     </div>
-      <div>
-        <slot name="footer" :uploading="uploading"></slot>
-      </div>
+    <div>
+      <slot name="footer" :uploading="uploading">
+        <div
+          class="text-center"
+          v-if="value && value.length && !uploading"
+        >
+          <v-btn
+            large
+            color="success"
+            @click="$emit('close')"
+            class="text-capitalize"
+            >Done</v-btn
+          >
+        </div>
+      </slot>
+    </div>
   </div>
 </template>
 
@@ -98,8 +111,7 @@ const storage = new Storage();
 
 export default {
   props: {
-    value: {
-    }
+    value: {},
   },
   data() {
     return {
@@ -107,6 +119,13 @@ export default {
       files: this.value || [],
       error: '',
     };
+  },
+  watch: {
+    value: {
+      handler(value) {
+        this.files = value || [];
+      },
+    },
   },
   mounted() {
     this.init();
