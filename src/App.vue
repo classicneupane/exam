@@ -7,6 +7,17 @@
 
 <script>
 export default {
+  watch: {
+    '$route.fullPath':
+    {
+      handler() {
+        setTimeout(() => {
+          this.reloadMath();
+        }, 1000);
+      },
+      immediate: true,
+    },
+  },
 };
 </script>
 

@@ -167,6 +167,7 @@ export default {
       q.list((data) => {
         this.data = data;
         this.loading = false;
+        this.reloadMath();
       });
     },
   },

@@ -28,14 +28,13 @@
               ></v-textarea>
             </div>
             <div v-else>
-            <div  class="d-flex flex-wrap">
+            <div  class="d-inline">
               <v-icon
                 :color="isSelected(item) ? 'primary' : ''"
               >
                 {{ getIcon(item) }}
               </v-icon>
-              <div class="ml-2">
-                {{ getObjValue(item, itemText) }}
+              <div class="ml-2 d-inline" v-html="getObjValue(item, itemText)">
               </div>
             </div>
             <div>
@@ -91,6 +90,15 @@ export default {
     },
     selectOnClickIcon: {
       type: Boolean, default: false,
+    },
+  },
+  watch: {
+    value: {
+      handler() {
+        setTimeout(() => {
+          this.reloadMath();
+        }, 1000);
+      },
     },
   },
   methods: {
