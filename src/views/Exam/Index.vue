@@ -154,7 +154,8 @@
             <div>
               <v-btn
                 :loading="submitLoading"
-                color="success"
+                color="indigo"
+                dark
                 @click="submit()"
                 class="text-capitalize mr-1"
                 >Submit</v-btn

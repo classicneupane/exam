@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app flat color="white">
+  <v-app-bar app flat color="white" hide-on-scroll>
     <v-toolbar-title>
       <router-link to="/">
         <v-img src="@/assets/logo.png" class="cursor-pointer" max-width="200"></v-img>

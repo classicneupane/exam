@@ -1,10 +1,10 @@
 <template>
   <div>
     <div v-if="sessions && sessions.length" class="mt-2">
-      <h1 class="text-h4">Ongoing exam</h1>
+      <h1 class="text-h5">Ongoing exam</h1>
       <div class="list-container d-flex">
         <div
-          class="list-item pa-5 px-10 list-item--active"
+          class="list-item pa-5 px-10 mx-1"
           v-for="session in sessions"
           :key="session.id"
         >
@@ -15,10 +15,9 @@
             Started
             {{ fromNow(session.data.startedAt.toDate()) }}
           </small>
-          <div class="grey--text my-1">
+          <div class="grey--text my-1" v-if="session.data.duration">
             <v-icon>mdi-clock</v-icon>
             <vue-countdown
-              v-if="session.data.duration"
               :time="remainingTime(session)"
               v-slot="{ hours, minutes, seconds }"
             >
@@ -29,10 +28,12 @@
             <v-btn
               :to="`/exam/${session.data.exam}`"
               text
-              class="text-capitalize v-btn--active"
+              block
+              large
+              class="text-capitalize v-btn--active mt-2"
               color="primary"
               rounded
-              >Go back to exam</v-btn
+              ><span class="primary--text">Continue</span></v-btn
             >
           </div>
         </div>
