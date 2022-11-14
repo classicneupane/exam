@@ -204,6 +204,9 @@
                   <strong>{{ index + 1 }}. </strong>
                   {{ question.data.question }}
                 </div>
+                <div>
+                  <ImageViewer :images="question.data.images" v-if="question.data.images"/>
+                </div>
                 <div class="ml-3">
                   <v-radio-group
                     v-model="
@@ -249,6 +252,7 @@ const saveSession = debounce(1000, (id, data) => {
 export default {
   components: {
     VueCountdown,
+    ImageViewer: () => import('../../components/ImageViewer.vue'),
   },
   created() {
     const eid = this.$route.params.id;

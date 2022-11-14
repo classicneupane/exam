@@ -67,6 +67,9 @@
       >
         <div class="d-flex justify-space-between">
           <div>{{ index + 1 }}. {{ item.data.question }}</div>
+          <div v-if="item.data.images">
+            <ImageViewer :images="item.data.images"/>
+          </div>
           <div>
             <v-btn @click="edit(item)" icon color="primary">
               <v-icon> mdi-pencil </v-icon>
@@ -103,6 +106,7 @@ export default {
   components: {
     EditForm: () => import('./EditForm.vue'),
     QuestionAdd: () => import('./Add.vue'),
+    ImageViewer: () => import('../ImageViewer.vue'),
   },
   data() {
     return {

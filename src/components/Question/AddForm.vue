@@ -30,13 +30,7 @@ export default {
         .create(this.formData)
         .then(() => {
           this.reset();
-          // this.success = 'Question added';
-          // setTimeout(() => {
-          //   this.success = '';
-          // }, 3000);
-          // setTimeout(() => {
           this.$emit('close');
-          // }, 100);
         })
         .catch((err) => {
           this.error = err;

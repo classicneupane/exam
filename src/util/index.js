@@ -2,6 +2,20 @@ const randomNumber = () =>
   // eslint-disable-next-line implicit-arrow-linebreak
   Math.floor(100000 + Math.random() * 900000);
 
+const randomString = (length = 15) => {
+  const result = [];
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i += 1) {
+    result.push(
+      characters.charAt(
+        Math.floor(Math.random() * charactersLength),
+      ),
+    );
+  }
+  return result.join('');
+};
+
 const value = (obj, key) => {
   const keys = key.split('.');
   if (!keys.length || !keys[0]) {
@@ -67,4 +81,4 @@ const sort = ({
   return res;
 };
 
-export { randomNumber, sort };
+export { randomNumber, sort, randomString };
