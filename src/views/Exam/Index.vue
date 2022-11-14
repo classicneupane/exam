@@ -213,8 +213,8 @@
                   <span
                     :class="{
                       'error--text':
-                        hours < 1 && minutes < 10,
-                      blink: hours < 1 && minutes < 10,
+                        hours < 1 && minutes < 5,
+                      blink: hours < 1 && minutes < 5,
                     }"
                   >
                     <strong>
@@ -287,9 +287,9 @@
                   question.data.type === 'MULTIPLE_CHOICE'
                 "
               >
-                <div :id="`question-${question.id}`">
+                <div :id="`question-${question.id}`" class="d-flex justify-left">
                   <strong>{{ index + 1 }}. </strong>
-                  {{ question.data.question }}
+                  <div v-html=" question.data.question" class="ml-2"></div>
                 </div>
                 <div>
                   <ImageViewer
