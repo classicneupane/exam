@@ -218,7 +218,7 @@
                     }"
                   >
                     <strong>
-                      {{ hours }}:{{ minutes }}:{{
+                      <span v-if="hours">{{ hours }}:</span>{{ minutes }}:{{
                         seconds
                       }}
                     </strong>
