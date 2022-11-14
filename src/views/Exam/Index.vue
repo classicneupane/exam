@@ -389,13 +389,17 @@ export default {
       }, 500);
     },
     attempted({ id }) {
-      const res = !!this.session.submitData[id];
-      return res;
+      try {
+        const res = !!this.session.submitData[id];
+        return res;
+      } catch {
+        return false;
+      }
     },
     results() {
       return Exam.checkAnswer(
         this.questions,
-        this.session.submitData,
+        this.session?.submitData || {},
       );
     },
     fromNow(date) {

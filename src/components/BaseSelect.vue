@@ -28,22 +28,34 @@
               ></v-textarea>
             </div>
             <div v-else>
-            <div  class="d-inline">
-              <v-icon
-                :color="isSelected(item) ? 'primary' : ''"
-              >
-                {{ getIcon(item) }}
-              </v-icon>
-              <div class="ml-2 d-inline" v-html="getObjValue(item, itemText)">
+              <div class="d-flex">
+                <v-icon
+                  :color="isSelected(item) ? 'primary' : ''"
+                >
+                  {{ getIcon(item) }}
+                </v-icon>
+                <div class="d-flex justify-left ml-2">
+                  <div
+                    v-html="getObjValue(item, itemText)"
+                  ></div>
+                </div>
               </div>
-            </div>
-            <div>
-              <ImageViewer :images="item.images" v-if="item.images" :readonly="readonly"/>
-            </div>
+              <div>
+                <ImageViewer
+                  :images="item.images"
+                  v-if="item.images"
+                  :readonly="readonly"
+                />
+              </div>
             </div>
           </div>
           <div>
-            <slot name="footer" :item="item" :index="index" :hover="hover"></slot>
+            <slot
+              name="footer"
+              :item="item"
+              :index="index"
+              :hover="hover"
+            ></slot>
           </div>
         </div>
       </v-hover>
@@ -55,8 +67,7 @@
 import { value } from '../util';
 
 export default {
-  components:
-  {
+  components: {
     ImageViewer: () => import('./ImageViewer.vue'),
   },
   props: {
@@ -89,7 +100,8 @@ export default {
       default: null,
     },
     selectOnClickIcon: {
-      type: Boolean, default: false,
+      type: Boolean,
+      default: false,
     },
   },
   watch: {
