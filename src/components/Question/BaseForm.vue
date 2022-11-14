@@ -70,7 +70,7 @@
         v-model="formData.correct"
         editable
       >
-        <template #footer="{ item, index }">
+        <template #footer="{ item, index, hover }">
           <div>
             <ImageViewer
               :images="item.images"
@@ -80,24 +80,30 @@
               @remove="removeOptionImage(index, $event)"
             />
           </div>
-          <v-btn
-            color="error"
-            text
-            class="text-none"
-            @click="removeOption(item.id)"
-            small
-          >
-            <v-icon>mdi-trash-can</v-icon>
-          </v-btn>
-          <v-btn
-            small
-            color="info"
-            text
-            class="text-none"
-            @click="addOptionImage(item, index)"
-          >
-            <v-icon>mdi-image-plus-outline</v-icon></v-btn
-          >
+          <v-expand-transition>
+            <div v-show="hover">
+              <v-btn
+                color="error"
+                text
+                class="text-none"
+                @click="removeOption(item.id)"
+                small
+              >
+                <v-icon>mdi-trash-can</v-icon>
+              </v-btn>
+              <v-btn
+                small
+                color="info"
+                text
+                class="text-none"
+                @click="addOptionImage(item, index)"
+              >
+                <v-icon
+                  >mdi-image-plus-outline</v-icon
+                ></v-btn
+              >
+            </div>
+          </v-expand-transition>
         </template>
       </BaseSelect>
       <div class="my-3">
@@ -216,7 +222,10 @@ export default {
       const imageIndex = images.findIndex(
         (i) => i.id === image.id,
       );
-      this.formData.options[optionIndex].images.splice(imageIndex, 1);
+      this.formData.options[optionIndex].images.splice(
+        imageIndex,
+        1,
+      );
       this.optionIndex = -1;
     },
     removeImage(image) {

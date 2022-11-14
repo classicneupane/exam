@@ -5,6 +5,7 @@
         v-for="(item, index) in items"
         :key="getObjValue(item, itemKey)"
         v-slot="{ hover }"
+        close-delay="100"
       >
         <div
           :class="{
@@ -42,7 +43,7 @@
             </div>
           </div>
           <div>
-            <slot name="footer" :item="item" :index="index"></slot>
+            <slot name="footer" :item="item" :index="index" :hover="hover"></slot>
           </div>
         </div>
       </v-hover>
@@ -113,7 +114,7 @@ export default {
   padding: 0px;
   .option {
     padding: 12px;
-    margin-top: 5px;
+    margin-top: 15px;
     border: 1px dashed rgba(63, 137, 249, 0.256);
     border-radius: 5px;
   }
