@@ -6,7 +6,7 @@
         <div class="section-container">
           <div
             class="
-              d-flex
+              d-sm-flex
               justify-space-between
               section
               align-center
@@ -25,6 +25,7 @@
               <lottie-player
                 src="https://assets4.lottiefiles.com/packages/lf20_uavyvaxw.json"
                 background="transparent"
+                style="max-width: 500px"
                 speed="1"
                 class="lottie-player"
                 loop
@@ -37,7 +38,7 @@
         <div class="section-container">
           <div
             class="
-              d-flex
+              d-sm-flex
               justify-space-between
               section
               align-center
@@ -53,7 +54,7 @@
             <div class="section-item">
               <v-img
                 src="@/assets/review.png"
-                max-width="600"
+                max-width="300"
                 style="border-radius: 10px"
               ></v-img>
             </div>
@@ -63,7 +64,7 @@
         <div class="section-container">
           <div
             class="
-              d-flex
+              d-sm-flex
               justify-space-between
               section
               align-center
@@ -144,7 +145,7 @@ export default {};
   height: 50vh;
 }
 .section-item {
-  max-width: 50%;
+  /* max-width: 50%; */
 }
 .feature-description {
   font-size: 1.5rem;
