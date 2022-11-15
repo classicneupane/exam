@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app flat color="white" hide-on-scroll>
+  <v-app-bar app flat color="white" v-if="routeName!=='Exam'">
     <v-toolbar-title>
       <router-link to="/">
         <v-img src="@/assets/logo.png" class="cursor-pointer" max-width="200"></v-img>
@@ -25,6 +25,9 @@
 <script>
 export default {
   computed: {
+    routeName() {
+      return this.$route.name;
+    },
     userInitial() {
       return String(this.$store.state.user.name).slice(0, 1);
     },

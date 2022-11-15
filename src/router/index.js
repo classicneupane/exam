@@ -39,6 +39,7 @@ const routes = [
   },
   {
     path: '/exam/:id/',
+    name: 'Exam',
     components: {
       header: AppHeader,
       default: () => import('../views/Exam/Index.vue'),
