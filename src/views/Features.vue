@@ -17,8 +17,7 @@
                 Continue where you left
               </h2>
               <div class="feature-description">
-                Do you have an inadvertently closed browser
-                or tab? Don't worry; you can always go back
+                Closed browser by mistake?  Don't worry; you can always go back
                 to the way things were.
               </div>
             </div>
